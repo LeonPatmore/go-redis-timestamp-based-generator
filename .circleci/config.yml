@@ -1,0 +1,22 @@
+---
+version: 2
+jobs:
+  build:
+    working_directory: ~/helm.sh/helm
+    docker:
+      - image: cimg/go:1.18
+    environment:
+      GOCACHE: "/tmp/go/cache"
+    steps:
+      - checkout
+      - run:
+          name: lint
+          command: make lint
+      - run:
+          name: test style
+          command: make test
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build

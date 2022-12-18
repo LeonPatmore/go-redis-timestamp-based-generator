@@ -1,0 +1,18 @@
+linters:
+  fast: true
+  disable-all: true
+  enable:
+    - unused
+    - errcheck
+    - goconst
+    - gocritic
+    - gofmt
+    - gosec
+    - govet
+    - misspell
+    - nakedret
+    - revive
+    - typecheck
+    - unconvert
+    - unparam
+    - unused
