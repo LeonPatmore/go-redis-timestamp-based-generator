@@ -4,3 +4,7 @@
 
 - Docker
 - Go
+
+## Redis Version
+
+7
