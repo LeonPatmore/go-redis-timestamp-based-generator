@@ -1,5 +1,5 @@
 setup:
-	docker run --network host --name redis -d redis
+	docker run --network host --name redis -d redis:7
 	go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 	go get .
 

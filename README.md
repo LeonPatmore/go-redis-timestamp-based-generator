@@ -1,13 +1,6 @@
-# Go Library Template
+# Go Redis Timestamp Based Generator
 
-Structure based on https://github.com/golang-standards/project-layout.
+## Requirements
 
-## Examples
-
-For quickly testing changes:
-
-`make run cmd=example`
-
-For building the executable:
-
-`make build cmd=example`
+- Docker
+- Go
