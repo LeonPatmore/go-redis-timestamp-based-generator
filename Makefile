@@ -1,7 +1,6 @@
 setup:
-	docker run --network host --name redis -d redis:7
+	docker run -P --name redis -d redis:7
 	go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
-	go get .
 
 run:
 	go run cmd/$(cmd)/$(cmd).go
@@ -20,3 +19,6 @@ test:
 
 cli:
 	docker run -it --name redis-cli --network host --rm redis redis-cli
+
+test-docker:
+	docker run --rm -it -p 4567:80 strm/helloworld-http
