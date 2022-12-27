@@ -1,5 +1,7 @@
 # Go Redis Timestamp Based Generator
 
+[Redis Notes](docs/REDISNOTES.md)
+
 ## Requirements
 
 - Docker
