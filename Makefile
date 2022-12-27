@@ -3,10 +3,10 @@ setup:
 	go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 
 run:
-	go run cmd/$(cmd)/$(cmd).go
+	go run cmd/$(cmd)/main.go
 
 build:
-	go build cmd/$(cmd)/$(cmd).go
+	go build cmd/$(cmd)/main.go
 
 lint:
 	golangci-lint run --timeout=3m

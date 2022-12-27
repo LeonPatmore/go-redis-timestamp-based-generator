@@ -20,6 +20,10 @@
 - A Redis cluster is not strongly consistent. This is because write acks from replicas are all
   async.
 
+## Locking
+
+Using https://github.com/go-redsync/redsync.
+
 ## Resources
 
 - https://redis.io/docs/manual/patterns/distributed-locks/

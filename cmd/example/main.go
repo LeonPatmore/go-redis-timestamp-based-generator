@@ -5,16 +5,16 @@ import (
 	"fmt"
 
 	"github.com/go-redis/redis/v8"
-	"github.com/go-redsync/redsync"
+	"github.com/go-redsync/redsync/v4"
 	"github.com/go-redsync/redsync/v4/redis/goredis/v8"
 )
 
 var ctx = context.Background()
 
 var client = redis.NewClient(&redis.Options{
-	Addr: "localhost:49153",
+	Addr:     "localhost:49153",
 	Password: "", // no password set
-	DB: 0,  // use default DB
+	DB:       0,  // use default DB
 })
 
 var pool = goredis.NewPool(client)
