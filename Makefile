@@ -1,5 +1,6 @@
 setup:
-	docker run -P --name redis -d redis:7
+	docker network create -d bridge redis-timestamp
+	docker run -P --network redis-timestamp --name redis -d redis:7
 	go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 
 run:
@@ -18,7 +19,7 @@ test:
 	go test -v ./...
 
 cli:
-	docker run -it --name redis-cli --network host --rm redis redis-cli
+	docker run -it --name redis-cli --network redis-timestamp --rm redis redis-cli -h redis
 
 test-docker:
 	docker run --rm -it -p 4567:80 strm/helloworld-http

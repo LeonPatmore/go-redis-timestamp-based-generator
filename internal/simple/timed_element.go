@@ -6,6 +6,23 @@ type TimedElement struct {
 }
 
 type TimedElementRepo interface {
-	Add(key string, element TimedElement)
-	GetAll()
+	Add(element *TimedElement) error
+	GetAll() ([]*TimedElement, error)
+	GetAllBeforeTimestamp(timestamp int) ([]*TimedElement, error)
+	Remove(element *TimedElement) error
+}
+
+func HandleElementsBeforeTimestamp(r TimedElementRepo, timestamp int, handle func(*TimedElement)) error {
+	all, err := r.GetAllBeforeTimestamp(timestamp)
+	if err != nil {
+		return err
+	}
+	for _, timedElement := range all {
+		handle(timedElement)
+		err := r.Remove(timedElement)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
