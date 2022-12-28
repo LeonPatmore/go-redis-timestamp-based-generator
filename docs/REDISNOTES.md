@@ -83,3 +83,16 @@ Hash table.
 
 Set/get: O(1)
 Get all keys/values: O(n)
+
+## Atmoic
+
+- Redis is single threaded, so commands can not happen at the same time.
+
+## Consistency
+
+- A Redis cluster is not strongly consistent. This is because write acks from replicas are all
+  async.
+
+## Locking
+
+Using https://github.com/go-redsync/redsync.

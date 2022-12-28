@@ -7,22 +7,18 @@
 - Docker
 - Go
 
-## Redis Version
+### Redis Version
 
 7
 
-## Atmoic
+## Testing
 
-- Redis is single threaded, so commands can not happen at the same time.
+Ensure you have set the following two env vars:
 
-## Consistency
+- `REDIS_HOST`: Host of Redis server.
+- `REDIS_PORT`: Port of Redis server.
 
-- A Redis cluster is not strongly consistent. This is because write acks from replicas are all
-  async.
-
-## Locking
-
-Using https://github.com/go-redsync/redsync.
+Then run `make test`.
 
 ## Resources
 

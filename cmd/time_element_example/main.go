@@ -1,8 +1,8 @@
 package main
 
 import (
-	"context"
 	"fmt"
+	"os"
 
 	"github.com/go-redis/redis/v8"
 	"github.com/google/uuid"
@@ -10,10 +10,8 @@ import (
 	"github.com/leonpatmore/go-redis-timestamp-based-generator/pkg/utils"
 )
 
-var ctx = context.Background()
-
 var client = redis.NewClient(&redis.Options{
-	Addr:     "localhost:49154",
+	Addr:     fmt.Sprintf("%s:%s", os.Getenv("REDIS_HOST"), os.Getenv("REDIS_PORT")),
 	Password: "", // no password set
 	DB:       0,  // use default DB
 })
