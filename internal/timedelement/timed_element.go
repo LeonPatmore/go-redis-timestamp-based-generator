@@ -1,4 +1,4 @@
-package simple
+package timedelement
 
 type TimedElement struct {
 	Timestamp int
