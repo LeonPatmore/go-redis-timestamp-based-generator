@@ -19,7 +19,7 @@ var client = redis.NewClient(&redis.Options{
 })
 
 func TestSetIfLarger_IfNewValueThenSet(t *testing.T) {
-	res, err := setIfLarger.Run(context.Background(), client, []string{uuid.NewString()}, 2).Result()
+	res, err := SetIfLarger.Run(context.Background(), client, []string{uuid.NewString()}, 2).Result()
 	assert.Nil(t, err)
 	assert.Equal(t, int64(2), res)
 }
@@ -29,7 +29,7 @@ func TestSetIfLarger_IfExistingValueIsSmallerThenSet(t *testing.T) {
 	_, err := client.Set(context.Background(), uuid, int64(2), time.Minute).Result()
 	assert.Nil(t, err)
 	
-	res, err := setIfLarger.Run(context.Background(), client, []string{uuid}, 5).Result()
+	res, err := SetIfLarger.Run(context.Background(), client, []string{uuid}, 5).Result()
 	assert.Nil(t, err)
 	assert.Equal(t, int64(5), res)
 }
@@ -39,7 +39,7 @@ func TestSetIfLarger_IfExistingValueIsLargerThenDoNotSet(t *testing.T) {
 	_, err := client.Set(context.Background(), uuid, int64(5), time.Minute).Result()
 	assert.Nil(t, err)
 	
-	res, err := setIfLarger.Run(context.Background(), client, []string{uuid}, 2).Result()
+	res, err := SetIfLarger.Run(context.Background(), client, []string{uuid}, 2).Result()
 	assert.Nil(t, err)
 	assert.Equal(t, int64(5), res)
 }

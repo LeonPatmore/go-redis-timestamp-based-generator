@@ -10,6 +10,8 @@ type TimedElementRepo interface {
 	GetAll() ([]*TimedElement, error)
 	GetAllBeforeTimestamp(timestamp int) ([]*TimedElement, error)
 	Remove(element *TimedElement) error
+	GetCurrentTimestamp() (*int64, error)
+	UpdateTimestamp(timestamp int64) error
 }
 
 func HandleElementsBeforeTimestamp(r TimedElementRepo, timestamp int, handle func(*TimedElement)) error {

@@ -10,6 +10,7 @@ import (
 
 type TimedElementRepoRedis struct {
 	Client *redis.Client
+	TimestampKey string
 	SetKey string
 }
 
@@ -53,4 +54,21 @@ func (t TimedElementRepoRedis) GetAllBeforeTimestamp(timestamp int) ([]*TimedEle
 			Data:      data,
 		}
 	}), nil
+}
+
+func (t TimedElementRepoRedis) GetCurrentTimestamp() (*int64, error) {
+	res, err := t.Client.Get(context.Background(), t.TimestampKey).Result()
+	if err == redis.Nil {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+	resAsInt, err := strconv.ParseInt(res, 10, 64)
+	return &resAsInt, err
+}
+
+func (t TimedElementRepoRedis) UpdateTimestamp(timestamp int64) error {
+	_, err := utils.SetIfLarger.Eval(context.Background(), t.Client, []string{t.TimestampKey}, timestamp).Result()
+	return err
 }
