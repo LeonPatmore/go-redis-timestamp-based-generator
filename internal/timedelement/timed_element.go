@@ -1,12 +1,14 @@
 package timedelement
 
+import "fmt"
+
 type TimedElement struct {
 	Timestamp int
 	Data      string
 }
 
 type TimedElementRepo interface {
-	Add(element *TimedElement) error
+	AddIfLargerThanTimestamp(element *TimedElement) (bool, error)
 	GetAll() ([]*TimedElement, error)
 	GetAllBeforeTimestamp(timestamp int64) ([]*TimedElement, error)
 	Remove(element *TimedElement) error
@@ -35,4 +37,16 @@ func UpdateTimestampAndHandleElementsBeforeTimestamp(r TimedElementRepo, timesta
 		return err
 	}
 	return HandleElementsBeforeTimestamp(r, *latestTimestamp, handle)
+}
+
+func AddElementAndHandleIfRequired(r TimedElementRepo, element *TimedElement, handle func(*TimedElement)) error {
+	addedToSet, err := r.AddIfLargerThanTimestamp(element)
+	if err != nil {
+		return err
+	}
+	if (!addedToSet) {
+		fmt.Printf("Handling element with data [ %s ] on ADD\n", element.Data)
+		handle(element)
+	}
+	return nil
 }

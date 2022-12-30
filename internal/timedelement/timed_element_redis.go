@@ -24,11 +24,15 @@ func NewRedisRepo(client *redis.Client, key string) *TimedElementRepoRedis {
 		fmt.Sprintf("timestamp:{%s}", key)}
 }
 
-func (t TimedElementRepoRedis) Add(element *TimedElement) error {
-	return t.Client.ZAdd(context.Background(), t.SetKey, &redis.Z{
-		Score:  float64(element.Timestamp),
-		Member: element.Data,
-	}).Err()
+func (t TimedElementRepoRedis) AddIfLargerThanTimestamp(element *TimedElement) (bool, error) {
+	_, err := utils.AddToSortedSetIfLargerThanNumber.Run(context.Background(), t.Client, []string{t.SetKey, t.TimestampKey}, element.Timestamp, element.Data).Result()
+	if err == redis.Nil {
+		return false, nil
+	}
+	if err != nil {
+		return false, err
+	}
+	return true, nil
 }
 
 func (t TimedElementRepoRedis) GetAll() ([]*TimedElement, error) {
