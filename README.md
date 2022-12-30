@@ -2,6 +2,21 @@
 
 [Redis Notes](docs/REDISNOTES.md)
 
+## Description
+
+A Redis library for processing timestamp based elements based on an external timestamp update.
+
+### Keywords
+
+- **Latest timestamp**: A stored timestamp that is continuously incremented based on external updates. Can only increase.
+
+- **Timestamp based element**: An element with an assiociated timestamp. This element should be processed only once the latest timestamp is updated to a value greater than the elements timestamp.
+
+### Problems
+
+- Must handle distributed processing.
+- Elements must be handled at-least-once.
+
 ## Requirements
 
 - Docker
