@@ -2,6 +2,10 @@
 
 [Redis Notes](docs/REDISNOTES.md)
 
+## Example
+
+[Basic Usage Example](cmd/time_element_example/main.go)
+
 ## Description
 
 A Redis library for processing timestamp based elements based on an external timestamp update.
