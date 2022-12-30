@@ -39,10 +39,10 @@ func (t TimedElementRepoRedis) Remove(element *TimedElement) error {
 	return t.Client.ZRem(context.Background(), t.SetKey, element.Data).Err()
 }
 
-func (t TimedElementRepoRedis) GetAllBeforeTimestamp(timestamp int) ([]*TimedElement, error) {
+func (t TimedElementRepoRedis) GetAllBeforeTimestamp(timestamp int64) ([]*TimedElement, error) {
 	res, err :=	t.Client.ZRangeByScoreWithScores(context.Background(), t.SetKey, &redis.ZRangeBy{
 		Min: "0",
-		Max: strconv.Itoa(timestamp),
+		Max: strconv.FormatInt(timestamp, 10),
 	}).Result()
 	if err != nil {
 		return nil, err
@@ -68,7 +68,8 @@ func (t TimedElementRepoRedis) GetCurrentTimestamp() (*int64, error) {
 	return &resAsInt, err
 }
 
-func (t TimedElementRepoRedis) UpdateTimestamp(timestamp int64) error {
-	_, err := utils.SetIfLarger.Eval(context.Background(), t.Client, []string{t.TimestampKey}, timestamp).Result()
-	return err
+func (t TimedElementRepoRedis) UpdateTimestamp(timestamp int64) (*int64, error) {
+	res, err := utils.SetIfLarger.Eval(context.Background(), t.Client, []string{t.TimestampKey}, timestamp).Result()
+	resAsInt := res.(int64)
+	return &resAsInt, err
 }

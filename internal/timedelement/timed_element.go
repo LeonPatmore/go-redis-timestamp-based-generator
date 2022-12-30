@@ -8,13 +8,13 @@ type TimedElement struct {
 type TimedElementRepo interface {
 	Add(element *TimedElement) error
 	GetAll() ([]*TimedElement, error)
-	GetAllBeforeTimestamp(timestamp int) ([]*TimedElement, error)
+	GetAllBeforeTimestamp(timestamp int64) ([]*TimedElement, error)
 	Remove(element *TimedElement) error
 	GetCurrentTimestamp() (*int64, error)
-	UpdateTimestamp(timestamp int64) error
+	UpdateTimestamp(timestamp int64) (*int64, error)
 }
 
-func HandleElementsBeforeTimestamp(r TimedElementRepo, timestamp int, handle func(*TimedElement)) error {
+func HandleElementsBeforeTimestamp(r TimedElementRepo, timestamp int64, handle func(*TimedElement)) error {
 	all, err := r.GetAllBeforeTimestamp(timestamp)
 	if err != nil {
 		return err
@@ -27,4 +27,12 @@ func HandleElementsBeforeTimestamp(r TimedElementRepo, timestamp int, handle fun
 		}
 	}
 	return nil
+}
+
+func UpdateTimestampAndHandleElementsBeforeTimestamp(r TimedElementRepo, timestamp int64, handle func(*TimedElement)) error {
+	latestTimestamp, err := r.UpdateTimestamp(timestamp)
+	if err != nil {
+		return err
+	}
+	return HandleElementsBeforeTimestamp(r, *latestTimestamp, handle)
 }

@@ -34,8 +34,31 @@ func runWithRandomRepo(t *testing.T, name string, f func(*testing.T)) bool {
 func TestWithRandomRepo(t *testing.T) {
 
 	runWithRandomRepo(t, "TestUpdateTimestamp_whenNoCurrentTimestamp", func(t *testing.T) {
-		err := repo.UpdateTimestamp(5)
+		res, err := repo.UpdateTimestamp(5)
 		assert.Nil(t, err)
+		assert.Equal(t, int64(5), *res)
+	})
+
+	runWithRandomRepo(t, "TestUpdateTimestamp_whenCurrentTimestampIsLower", func(t *testing.T) {
+		_, err := repo.UpdateTimestamp(5)
+		assert.Nil(t, err)
+
+		t.Run("TestUpdateTimestamp_whenCurrentTimestampIsLower", func(t *testing.T) {
+			res, err := repo.UpdateTimestamp(10)
+			assert.Nil(t, err)
+			assert.Equal(t, int64(10), *res)
+		})
+	})
+
+	runWithRandomRepo(t, "TestUpdateTimestamp_whenCurrentTimestampIsHigher", func(t *testing.T) {
+		_, err := repo.UpdateTimestamp(10)
+		assert.Nil(t, err)
+
+		t.Run("TestUpdateTimestamp_whenCurrentTimestampIsLower", func(t *testing.T) {
+			res, err := repo.UpdateTimestamp(6)
+			assert.Nil(t, err)
+			assert.Equal(t, int64(10), *res)
+		})
 	})
 
 	runWithRandomRepo(t, "TestGetCurrentTimestamp_WhenNoCurrentTimestamp", func(t *testing.T) {
@@ -45,7 +68,7 @@ func TestWithRandomRepo(t *testing.T) {
 	})
 
 	runWithRandomRepo(t, "TestGetCurrentTimestamp_WhenCurrentTimestampExists", func(t *testing.T) {
-		err := repo.UpdateTimestamp(5)
+		_, err := repo.UpdateTimestamp(5)
 		assert.Nil(t, err)
 		t.Run("TestGetCurrentTimestamp_WhenCurrentTimestamp", func(t *testing.T) {
 			res, err := repo.GetCurrentTimestamp()
