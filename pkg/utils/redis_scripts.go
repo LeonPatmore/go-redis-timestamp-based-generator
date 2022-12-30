@@ -12,3 +12,15 @@ if (newValue > currentValue) then
 end
 return currentValue
 `)
+
+var AddToSortedSetIfLargerThanNumber = redis.NewScript(`
+local setKey = KEYS[1]
+local numberKey = KEYS[2]
+local targetNumber = tonumber(redis.call('get', numberKey) or 0)
+local myScore = tonumber(ARGV[1])
+local myData = ARGV[2]
+if (myScore > targetNumber) then
+    redis.call('zadd', setKey, myScore, myData)
+    return myData
+end
+`)

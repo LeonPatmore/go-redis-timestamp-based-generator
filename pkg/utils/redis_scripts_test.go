@@ -43,3 +43,64 @@ func TestSetIfLarger_IfExistingValueIsLargerThenDoNotSet(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, int64(5), res)
 }
+
+func TestAddToSortedSetIfLargerThanNumber_NoNumberExists_AddsToSet(t *testing.T) {
+	key := uuid.NewString()
+	setKey := fmt.Sprintf("set:{%s}", key)
+	numberKey := fmt.Sprintf("number:{%s}", key)
+	res, err := AddToSortedSetIfLargerThanNumber.Run(context.Background(), client, []string{setKey, numberKey}, 10, "data").Result()
+
+	assert.Nil(t, err)
+	assert.Equal(t, "data", res)
+}
+
+func TestAddToSortedSetIfLargerThanNumber_NumberExistsAndIsSmaller_AddsToSet(t *testing.T) {
+	key := uuid.NewString()
+	setKey := fmt.Sprintf("set:{%s}", key)
+	numberKey := fmt.Sprintf("number:{%s}", key)
+
+	err := client.Set(context.Background(), numberKey, 6, time.Minute).Err()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	t.Run("TestAddToSortedSetIfLargerThanNumber_NumberExistsAndIsSmaller_AddsToSet", func(t *testing.T) {
+		res, err := AddToSortedSetIfLargerThanNumber.Run(context.Background(), client, []string{setKey, numberKey}, 10, "data").Result()
+		assert.Nil(t, err)
+		assert.Equal(t, "data", res)
+	})
+}
+
+func TestAddToSortedSetIfLargerThanNumber_NumberExistsAndIsLarger_DoNotAddToSet(t *testing.T) {
+	key := uuid.NewString()
+	setKey := fmt.Sprintf("set:{%s}", key)
+	numberKey := fmt.Sprintf("number:{%s}", key)
+
+	err := client.Set(context.Background(), numberKey, 12, time.Minute).Err()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	t.Run("TestAddToSortedSetIfLargerThanNumber_NumberExistsAndIsSmaller_AddsToSet", func(t *testing.T) {
+		res, err := AddToSortedSetIfLargerThanNumber.Run(context.Background(), client, []string{setKey, numberKey}, 10, "data").Result()
+		assert.Equal(t, redis.Nil, err)
+		assert.Nil(t, res)
+	})
+}
+
+func TestAddToSortedSetIfLargerThanNumber_NumberExistsAndIsTheSame_DoNotAddToSet(t *testing.T) {
+	key := uuid.NewString()
+	setKey := fmt.Sprintf("set:{%s}", key)
+	numberKey := fmt.Sprintf("number:{%s}", key)
+
+	err := client.Set(context.Background(), numberKey, 10, time.Minute).Err()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	t.Run("TestAddToSortedSetIfLargerThanNumber_NumberExistsAndIsSmaller_AddsToSet", func(t *testing.T) {
+		res, err := AddToSortedSetIfLargerThanNumber.Run(context.Background(), client, []string{setKey, numberKey}, 10, "data").Result()
+		assert.Equal(t, redis.Nil, err)
+		assert.Nil(t, res)
+	})
+}
