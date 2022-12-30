@@ -2,6 +2,7 @@ package timedelement
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 
 	"github.com/go-redis/redis/v8"
@@ -9,9 +10,18 @@ import (
 )
 
 type TimedElementRepoRedis struct {
-	Client *redis.Client
+	Client       *redis.Client
+	Key          string
+	SetKey       string
 	TimestampKey string
-	SetKey string
+}
+
+func NewRedisRepo(client *redis.Client, key string) *TimedElementRepoRedis {
+	return &TimedElementRepoRedis{
+		client,
+		key,
+		fmt.Sprintf("set:{%s}", key),
+		fmt.Sprintf("timestamp:{%s}", key)}
 }
 
 func (t TimedElementRepoRedis) Add(element *TimedElement) error {
@@ -40,7 +50,7 @@ func (t TimedElementRepoRedis) Remove(element *TimedElement) error {
 }
 
 func (t TimedElementRepoRedis) GetAllBeforeTimestamp(timestamp int64) ([]*TimedElement, error) {
-	res, err :=	t.Client.ZRangeByScoreWithScores(context.Background(), t.SetKey, &redis.ZRangeBy{
+	res, err := t.Client.ZRangeByScoreWithScores(context.Background(), t.SetKey, &redis.ZRangeBy{
 		Min: "0",
 		Max: strconv.FormatInt(timestamp, 10),
 	}).Result()

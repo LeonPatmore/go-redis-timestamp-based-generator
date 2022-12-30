@@ -28,7 +28,7 @@ func TestSetIfLarger_IfExistingValueIsSmallerThenSet(t *testing.T) {
 	uuid := uuid.NewString()
 	_, err := client.Set(context.Background(), uuid, int64(2), time.Minute).Result()
 	assert.Nil(t, err)
-	
+
 	res, err := SetIfLarger.Run(context.Background(), client, []string{uuid}, 5).Result()
 	assert.Nil(t, err)
 	assert.Equal(t, int64(5), res)
@@ -38,7 +38,7 @@ func TestSetIfLarger_IfExistingValueIsLargerThenDoNotSet(t *testing.T) {
 	uuid := uuid.NewString()
 	_, err := client.Set(context.Background(), uuid, int64(5), time.Minute).Result()
 	assert.Nil(t, err)
-	
+
 	res, err := SetIfLarger.Run(context.Background(), client, []string{uuid}, 2).Result()
 	assert.Nil(t, err)
 	assert.Equal(t, int64(5), res)

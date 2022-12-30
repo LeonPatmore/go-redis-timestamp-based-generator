@@ -19,11 +19,7 @@ var client = redis.NewClient(&redis.Options{
 var repo TimedElementRepo
 
 func setupRandomRepo() {
-	repo = TimedElementRepoRedis{
-		Client: client,
-		TimestampKey: uuid.NewString(),
-		SetKey: uuid.NewString(),
-	}
+	repo = *NewRedisRepo(client, uuid.NewString())
 }
 
 func runWithRandomRepo(t *testing.T, name string, f func(*testing.T)) bool {

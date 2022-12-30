@@ -18,7 +18,7 @@ var client = redis.NewClient(&redis.Options{
 
 var repo = &timedelement.TimedElementRepoRedis{
 	Client: client,
-	SetKey: "mykey",
+	Key:    "mykey",
 }
 
 func main() {
@@ -31,9 +31,11 @@ func main() {
 		panic(err)
 	}
 	fmt.Println("Before:")
-	fmt.Println(utils.Map(values, func(item *timedelement.TimedElement) string { return fmt.Sprintf("%s has score %d", item.Data, item.Timestamp) }))
+	fmt.Println(utils.Map(values, func(item *timedelement.TimedElement) string {
+		return fmt.Sprintf("%s has score %d", item.Data, item.Timestamp)
+	}))
 
-	err = timedelement.HandleElementsBeforeTimestamp(repo, 2, func(te *timedelement.TimedElement) { fmt.Printf("Removing element with ID %s\n", te.Data)})
+	err = timedelement.HandleElementsBeforeTimestamp(repo, 2, func(te *timedelement.TimedElement) { fmt.Printf("Removing element with ID %s\n", te.Data) })
 	if err != nil {
 		panic(err)
 	}
@@ -43,5 +45,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(utils.Map(newValues, func(item *timedelement.TimedElement) string { return fmt.Sprintf("%s has score %d", item.Data, item.Timestamp) }))
+	fmt.Println(utils.Map(newValues, func(item *timedelement.TimedElement) string {
+		return fmt.Sprintf("%s has score %d", item.Data, item.Timestamp)
+	}))
 }
