@@ -69,10 +69,17 @@ removed by key (member name).
 
 **Case 1**
 
+Potential issue:
+
 1. New element is determined to be higher than latest timestamp.
-2. Timestamp update which is higher than the previous element. New element is not added to the list yet.
+2. Timestamp update is triggered with a timestamp higher than the previous element. New element is not added to the list yet. Timestamp update finishes processing without the previous element.
 3. New element is added to list.
 
-In this case, the new element is not handled, but the timestamp is updated to a higher value.
+In this case, the new element is not handled, but the timestamp is updated to a higher value. However, this library handles this case by doing the following:
 
-TODO: This needs to be handled.
+1. New element is determined to be higher than latest timestamp.
+2. Timestamp update is triggered with a timestamp higher than the previous element. The command update timestamp is queued in Redis, but is behind the command to add the previous timed element to the set (since the commands are part of a Lua script).
+3. New element is added to the list.
+4. Timestamp update updates timestamp.
+5. Timestamp update gets a list of all elements before this timestamp, which includes the new element from (1).
+6. New element is processed.
