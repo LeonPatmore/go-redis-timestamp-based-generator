@@ -6,6 +6,37 @@
 
 [Basic Usage Example](cmd/time_element_example/main.go)
 
+To run the example yourself:
+
+`make run cmd=time_element_example`
+
+<details>
+    <summary>Expected Output</summary>
+
+    Adding 3 new timed elements...
+    Before timestamp update:
+    [cfb76172-9829-4940-bf27-50924e75147c has timestamp 1 be4b1b4f-f0b4-49ce-9034-742b45aaf877 has timestamp 2 d76118d0-084d-47b4-a4bb-4fb7b76b1605 has timestamp 3]
+    Pushing timestamp update for timestamp [ 2 ]. This should trigger handling of two elements.
+    Handling element with ID cfb76172-9829-4940-bf27-50924e75147c
+    Handling element with ID be4b1b4f-f0b4-49ce-9034-742b45aaf877
+    After timestamp update:
+    [d76118d0-084d-47b4-a4bb-4fb7b76b1605 has timestamp 3]
+    Pushing element with timestamp [ 2 ]. This element should be handled instantly, and not added to the queue.
+    Handling element with data [ 408b52dc-f312-4ac0-95f4-6ef480f56121 ] on ADD
+    Handling element with ID 408b52dc-f312-4ac0-95f4-6ef480f56121
+    After new element:
+    [d76118d0-084d-47b4-a4bb-4fb7b76b1605 has timestamp 3]
+    Pushing element with timestamp [ 3 ]. This element should not be handled instantly.
+    After new element:
+    [d76118d0-084d-47b4-a4bb-4fb7b76b1605 has timestamp 3 f121dc68-32bd-49d2-8e5b-338d2874f22d has timestamp 3]
+    Pushing timestamp update for timestamp [ 3 ]. This should trigger handling of two elements.
+    Handling element with ID d76118d0-084d-47b4-a4bb-4fb7b76b1605
+    Handling element with ID f121dc68-32bd-49d2-8e5b-338d2874f22d
+    There should now be zero elements left:
+    []
+
+</details>
+
 ## Description
 
 A Redis library for processing timestamp based elements based on an external timestamp update.

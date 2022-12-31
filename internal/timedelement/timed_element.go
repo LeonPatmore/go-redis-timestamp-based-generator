@@ -44,7 +44,7 @@ func AddElementAndHandleIfRequired(r TimedElementRepo, element *TimedElement, ha
 	if err != nil {
 		return err
 	}
-	if (!addedToSet) {
+	if !addedToSet {
 		fmt.Printf("Handling element with data [ %s ] on ADD\n", element.Data)
 		handle(element)
 	}
